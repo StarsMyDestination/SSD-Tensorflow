@@ -45,11 +45,13 @@ def tf_ssd_bboxes_encode_layer(labels,
     """
     # Anchors coordinates and volume.
     yref, xref, href, wref = anchors_layer
+    # print('yref, href shape: {}, {}'.format(yref.shape, href.shape))
     ymin = yref - href / 2.
     xmin = xref - wref / 2.
     ymax = yref + href / 2.
     xmax = xref + wref / 2.
     vol_anchors = (xmax - xmin) * (ymax - ymin)
+    print('vol_anchors.shape: {}'.format(vol_anchors.shape))
 
     # Initialize tensors...
     shape = (yref.shape[0], yref.shape[1], href.size)

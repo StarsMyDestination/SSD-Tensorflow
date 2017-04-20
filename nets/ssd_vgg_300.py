@@ -202,7 +202,7 @@ class SSDNet(object):
 
     def bboxes_decode(self, feat_localizations, anchors,
                       scope='ssd_bboxes_decode'):
-        """Encode labels and bounding boxes.
+        """Decode labels and bounding boxes.
         """
         return ssd_common.tf_ssd_bboxes_decode(
             feat_localizations, anchors,
@@ -334,6 +334,7 @@ def ssd_anchor_one_layer(img_shape,
     y, x = np.mgrid[0:feat_shape[0], 0:feat_shape[1]]
     y = (y.astype(dtype) + offset) * step / img_shape[0]
     x = (x.astype(dtype) + offset) * step / img_shape[1]
+    print('anchor_layer_xy shape: {}, {}'.format(x.shape, y.shape))
 
     # Expand dims to support easy broadcasting.
     y = np.expand_dims(y, axis=-1)
@@ -355,6 +356,7 @@ def ssd_anchor_one_layer(img_shape,
     for i, r in enumerate(ratios):
         h[i+di] = sizes[0] / img_shape[0] / math.sqrt(r)
         w[i+di] = sizes[0] / img_shape[1] * math.sqrt(r)
+    print('anchor_layer_hw shape: {}, {}'.format(h.shape, w.shape))
     return y, x, h, w
 
 
@@ -407,18 +409,23 @@ def ssd_multibox_layer(inputs,
     """Construct a multibox layer, return a class and localization predictions.
     """
     net = inputs
+    print('net.shape: {}'.format(net.get_shape().as_list()))
     if normalization > 0:
         net = custom_layers.l2_normalization(net, scaling=True)
     # Number of anchors.
     num_anchors = len(sizes) + len(ratios)
+    print('num_anchors: {}'.format(num_anchors))
 
     # Location.
     num_loc_pred = num_anchors * 4
     loc_pred = slim.conv2d(net, num_loc_pred, [3, 3], activation_fn=None,
                            scope='conv_loc')
+    print('loc_pred_1.shape: {}'.format(loc_pred.get_shape().as_list()))
     loc_pred = custom_layers.channel_to_last(loc_pred)
+    print('loc_pred_2.shape: {}'.format(loc_pred.get_shape().as_list()))
     loc_pred = tf.reshape(loc_pred,
                           tensor_shape(loc_pred, 4)[:-1]+[num_anchors, 4])
+    print('loc_pred_3.shape: {}'.format(loc_pred.get_shape().as_list()))
     # Class prediction.
     num_cls_pred = num_anchors * num_classes
     cls_pred = slim.conv2d(net, num_cls_pred, [3, 3], activation_fn=None,
@@ -426,6 +433,7 @@ def ssd_multibox_layer(inputs,
     cls_pred = custom_layers.channel_to_last(cls_pred)
     cls_pred = tf.reshape(cls_pred,
                           tensor_shape(cls_pred, 4)[:-1]+[num_anchors, num_classes])
+    # print('cls_pred.shape: {}'.format(cls_pred.get_shape().as_list()))
     return cls_pred, loc_pred
 
 

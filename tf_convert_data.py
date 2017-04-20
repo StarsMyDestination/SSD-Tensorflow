@@ -22,6 +22,12 @@ python tf_convert_data.py \
     --dataset_dir=/tmp/pascalvoc \
     --output_name=pascalvoc \
     --output_dir=/tmp/
+
+python tf_convert_data.py \
+    --dataset_name=pascalvoc \
+    --dataset_dir=Data/VOC2007/ \
+    --output_name=pascalvoc \
+    --output_dir=Data/
 ```
 """
 import tensorflow as tf
@@ -34,13 +40,13 @@ tf.app.flags.DEFINE_string(
     'dataset_name', 'pascalvoc',
     'The name of the dataset to convert.')
 tf.app.flags.DEFINE_string(
-    'dataset_dir', None,
+    'dataset_dir', 'Data/VOC2007/',
     'Directory where the original dataset is stored.')
 tf.app.flags.DEFINE_string(
-    'output_name', 'pascalvoc',
+    'output_name', 'voc_2007_train',
     'Basename used for TFRecords output files.')
 tf.app.flags.DEFINE_string(
-    'output_dir', './',
+    'output_dir', 'Data/tf_voc2007',
     'Output directory where to store TFRecords files.')
 
 
