@@ -85,7 +85,7 @@ tf.app.flags.DEFINE_string(
 tf.app.flags.DEFINE_string(
     'dataset_split_name', 'test', 'The name of the train/test split.')
 tf.app.flags.DEFINE_string(
-    'dataset_dir', 'Data/tf_voc2007', 'The directory where the dataset files are stored.')
+    'dataset_dir', 'Data/tf_voc2007-test', 'The directory where the dataset files are stored.')
 tf.app.flags.DEFINE_string(
     'model_name', 'ssd_300_vgg', 'The name of the architecture to evaluate.')
 tf.app.flags.DEFINE_string(
